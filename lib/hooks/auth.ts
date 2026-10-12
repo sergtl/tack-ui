@@ -1,0 +1,101 @@
+import { useMutation } from "@tanstack/react-query";
+
+export function useLogin() {
+  const { data, mutate, error, isPending } = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json();
+        throw new Error(body.error ?? "Login failed");
+      }
+
+      const result = await response.json();
+
+      return result;
+    },
+  });
+
+  function login(email: string, password: string) {
+    mutate({
+      email,
+      password,
+    });
+  }
+
+  return { login, data, error, isPending };
+}
+
+export function useSignup() {
+  const { data, mutate, error, isPending } = useMutation({
+    mutationFn: async ({
+      name,
+      email,
+      password,
+      workspace,
+    }: {
+      name: string;
+      email: string;
+      password: string;
+      workspace: string;
+    }) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/register`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            workspace,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const body = await response.json();
+        throw new Error(body.error ?? "Signup failed");
+      }
+
+      const result = await response.json();
+
+      return result;
+    },
+  });
+
+  function signup(
+    name: string,
+    email: string,
+    password: string,
+    workspace: string,
+  ) {
+    mutate({
+      name,
+      email,
+      password,
+      workspace,
+    });
+  }
+
+  return { signup, data, error, isPending };
+}
