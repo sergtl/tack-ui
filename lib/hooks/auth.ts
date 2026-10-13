@@ -1,4 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ApiError, protectedFetch } from "../protectedFetch";
 
 export function useLogin() {
   const { data, mutate, error, isPending } = useMutation({
@@ -98,4 +99,24 @@ export function useSignup() {
   }
 
   return { signup, data, error, isPending };
+}
+
+export function useMe() {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const response = await protectedFetch("/me");
+      const body = await response.json();
+
+      return body.me;
+    },
+    retry(failureCount, error) {
+      // don't retry if it's authentication error
+      if (error instanceof ApiError && error.status === 401) {
+        return false;
+      }
+
+      return failureCount < 2;
+    },
+  });
 }
