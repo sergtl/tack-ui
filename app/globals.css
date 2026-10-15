@@ -131,3 +131,23 @@
     @apply font-sans;
   }
 }
+/* Markdown content needs explicit typography because Tailwind resets it. */
+.issue-markdown {
+  min-height: 12rem;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+.issue-markdown > * + * { margin-top: 0.75rem; }
+.issue-markdown h1 { font-size: 1.5rem; font-weight: 600; }
+.issue-markdown h2 { font-size: 1.25rem; font-weight: 600; }
+.issue-markdown h3 { font-size: 1.125rem; font-weight: 600; }
+.issue-markdown ul { list-style: disc; padding-left: 1.5rem; }
+.issue-markdown ol { list-style: decimal; padding-left: 1.5rem; }
+.issue-markdown blockquote { border-left: 3px solid var(--border); padding-left: 1rem; color: var(--muted-foreground); }
+.issue-markdown a { color: var(--primary); text-decoration: underline; }
+.issue-markdown code { border-radius: 0.25rem; background: var(--muted); padding: 0.125rem 0.25rem; font-family: var(--font-geist-mono), monospace; }
+.issue-markdown pre { overflow-x: auto; }
+.mdxeditor { font-family: inherit; }
+.mdxeditor [role="toolbar"] { flex-wrap: wrap; }

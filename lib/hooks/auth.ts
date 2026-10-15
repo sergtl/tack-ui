@@ -101,10 +101,18 @@ export function useSignup() {
   return { signup, data, error, isPending };
 }
 
+type MeResponse = {
+  id: number;
+  name: string;
+  email: string;
+  workspace_name: string;
+  workspace_slug: string;
+};
+
 export function useMe() {
   return useQuery({
     queryKey: ["me"],
-    queryFn: async () => {
+    queryFn: async (): Promise<MeResponse> => {
       const response = await protectedFetch("/me");
       const body = await response.json();
 

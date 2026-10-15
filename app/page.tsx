@@ -1,37 +1,56 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIssues } from "@/lib/hooks/issues";
 
 export default function Home() {
-  const { data: issues, isPending } = useIssues();
+  const { data, isPending, error } = useIssues();
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <h1>Hello, welcome</h1>
-        {/* <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <SectionCards />
-              <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
-              </div>
-              <DataTable data={data} />
-            </div>
-          </div>
-        </div> */}
-      </SidebarInset>
-    </SidebarProvider>
+    <main className="mx-auto w-full max-w-6xl space-y-6 p-6 md:p-10">
+      <h1 className="text-2xl font-semibold tracking-tight">Issues</h1>
+      {isPending && (
+        <p role="status" className="text-sm text-muted-foreground">
+          Loading issues…
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error.message}
+        </p>
+      )}
+      {!isPending && !error && data?.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          No issues yet. Create your first issue from the sidebar.
+        </p>
+      )}
+      {!error && data && data.length > 0 && (
+        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {data.map((issue) => (
+            <li key={issue.id} className="min-w-0">
+              <Link
+                href={`/issues/${issue.id}`}
+                className="block h-full rounded-xl transition-shadow hover:ring-2 hover:ring-ring/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Card className="h-full">
+                  <CardHeader className="gap-3">
+                    <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                      <span>#{issue.id}</span>
+                      <span className="rounded-md bg-muted px-2 py-1 capitalize">
+                        {issue.status}
+                      </span>
+                    </div>
+                    <CardTitle>
+                      <h2 className="break-words">{issue.title}</h2>
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
   );
 }
