@@ -3,6 +3,9 @@ import { ApiError, protectedFetch } from "../protectedFetch";
 
 export function useLogin() {
   const { data, mutate, error, isPending } = useMutation({
+    onSuccess: () => {
+      window.location.replace("/");
+    },
     mutationFn: async ({
       email,
       password,
@@ -41,6 +44,27 @@ export function useLogin() {
   }
 
   return { login, data, error, isPending };
+}
+
+export function useLogout() {
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        throw new Error(body?.error ?? "Logout failed. Please try again.");
+      }
+    },
+    onSuccess: () => {
+      window.location.replace("/login");
+    },
+  });
+
+  return { logout: mutate, error, isPending };
 }
 
 export function useSignup() {

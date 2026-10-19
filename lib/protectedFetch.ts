@@ -14,7 +14,12 @@ export async function protectedFetch(path: string, options: RequestInit = {}) {
   });
 
   if (response.status === 401) {
-    window.location.replace("/login");
+    const isAuthPage = ["/login", "/signup"].includes(window.location.pathname);
+
+    if (!isAuthPage) {
+      window.location.replace("/login");
+    }
+
     throw new ApiError(401, "Session expired");
   }
 

@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useLogout } from "@/lib/hooks/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +36,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { logout, error, isPending } = useLogout();
 
   return (
     <SidebarMenu>
@@ -88,10 +88,21 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={isPending}
+              onSelect={(event) => {
+                event.preventDefault();
+                logout();
+              }}
+            >
               <IconLogout />
-              Log out
+              {isPending ? "Logging out…" : "Log out"}
             </DropdownMenuItem>
+            {error && (
+              <p role="alert" className="px-2 py-1 text-sm text-destructive">
+                {error.message}
+              </p>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

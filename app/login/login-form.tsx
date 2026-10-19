@@ -35,11 +35,9 @@ export function LoginForm({
     },
   });
 
-  const { data, error, isPending, login } = useLogin();
+  const { error, isPending, login } = useLogin();
 
   function onSubmit(data: z.infer<typeof loginFormSchema>) {
-    console.log("data", data);
-
     login(data.email, data.password);
   }
 
