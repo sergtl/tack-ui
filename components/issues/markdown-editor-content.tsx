@@ -39,7 +39,11 @@ export default function MarkdownEditorContent({
     <div ref={setOverlayContainer}>
       <MDXEditor
         markdown={markdown}
-        onChange={onChange}
+        onChange={(value, initialNormalize) => {
+          if (!initialNormalize) {
+            onChange?.(value);
+          }
+        }}
         readOnly={readOnly}
         overlayContainer={overlayContainer}
         placeholder="Describe the issue…"
